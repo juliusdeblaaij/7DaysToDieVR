@@ -42,6 +42,14 @@ namespace _7DaysToDieVR
             }
 
             instanceCamera.fieldOfView = API.VRHeadsetFOV;
+
+            // Create an instance of the custom InputDevice.
+            var leftController = new VRControllerDevice(0);
+            var rightController = new VRControllerDevice(1);
+
+            // Attach the custom InputDevice to the InputManager.
+            InputManager.AttachDevice(leftController);
+            InputManager.AttachDevice(rightController);
         }
     }
 
@@ -66,14 +74,9 @@ namespace _7DaysToDieVR
             Quaternion headsetRotation = new Quaternion(-headsetRotation4f.x, -headsetRotation4f.y, headsetRotation4f.z, headsetRotation4f.w);
             Vector3 headsetPosition = new Vector3(headsetPosition3f.x, headsetPosition3f.y, headsetPosition3f.z);
 
+            __instance.playerCamera.transform.rotation = headsetRotation;
 
-            var controllerState = VorpX.vpxGetControllerState(0);
-
-            __instance.movementInput.rotation = new Vector3(headsetRotation.x, headsetRotation.y, headsetRotation.z);
-            __instance.movementInput.moveForward = controllerState.StickY;
-            __instance.movementInput.moveStrafe = controllerState.StickX;
-
-            __instance.playerCamera.transform.position = __instance.cameraTransform.position + headsetPosition;
+            var activeDevice = InputManager.ActiveDevice;
         }
     }
 }
