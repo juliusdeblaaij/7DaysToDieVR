@@ -95,6 +95,8 @@ public class VRControllerDevice : InputDevice
 
         UpdateWithValue(InputControlType.LeftStickDown, stickYMin, updateTick, deltaTime);
         UpdateWithValue(InputControlType.LeftStickUp, stickYMax, updateTick, deltaTime);
+
+        UpdateWithValue(InputControlType.RightTrigger, vpxControllerState.Trigger, updateTick, deltaTime);
     }
 
     //TODO: Fix that the movement is screwed after the mouse is moved

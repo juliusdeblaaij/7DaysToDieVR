@@ -12,7 +12,7 @@ public class VRHeadsetDevice : InputDevice
 
     public bool IsConnected => false;
 
-    public DirectionMapping DirectionMappingMode = VRControllerDevice.DirectionMapping.Absolute;
+    public DirectionMapping DirectionMappingMode = VRHeadsetDevice.DirectionMapping.Absolute;
 
     public enum DirectionMapping
     {

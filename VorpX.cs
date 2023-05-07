@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 public static class VorpX
 {
@@ -93,6 +94,42 @@ public static class VorpX
     public static float vpxRadToDeg(float a)
     {
        return a * 57.295795131f;
+    }
+
+    public static Vector3 GetControllerPosition(int controllerNum)
+    {
+        var controllerPosition = vpxGetControllerPosition((uint) controllerNum);
+        return new Vector3(controllerPosition.x, controllerPosition.y, controllerPosition.z);
+    }
+
+    public static Vector3 GetControllerRotationEuler(int controllerNum)
+    {
+        var controllerRotation = vpxGetControllerRotationEuler((uint) controllerNum);
+        return new Vector3(controllerRotation.x, controllerRotation.y, controllerRotation.z);
+    }
+
+    public static Quaternion GetControllerRotationQuaternion(int controllerNum)
+    {
+        var controllerRotation = vpxGetControllerRotationQuaternion((uint)controllerNum);
+        return new Quaternion(controllerRotation.x, controllerRotation.y, controllerRotation.z, controllerRotation.w);
+    }
+
+    public static Vector3 GetHeadsetPosition()
+    {
+        var controllerPosition = vpxGetHeadsetPosition();
+        return new Vector3(controllerPosition.x, controllerPosition.y, controllerPosition.z);
+    }
+
+    public static Vector3 GetHeadsetRotationEuler()
+    {
+        var controllerRotation = vpxGetHeadsetRotationEuler();
+        return new Vector3(controllerRotation.x, controllerRotation.y, controllerRotation.z);
+    }
+
+    public static Quaternion GetHeadsetRotationQuaternion()
+    {
+        var controllerRotation = vpxGetHeadsetRotationQuaternion();
+        return new Quaternion(controllerRotation.x, controllerRotation.y, controllerRotation.z, controllerRotation.w);
     }
 
     // Define C# versions of the C structs

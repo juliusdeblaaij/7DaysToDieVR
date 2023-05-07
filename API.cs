@@ -8,6 +8,8 @@ using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
 using InControl;
+using Gizmos = Popcron.Gizmos;
+using System.Linq;
 
 namespace _7DaysToDieVR
 {
@@ -22,10 +24,32 @@ namespace _7DaysToDieVR
         }
     }
 
+    /* FORMAT OF 7D2D arms
+    
+        prefabEntityPlayerLocal (Clone)
+        ↳ Camera
+            ↳ femaleArms_fp
+                ↳ Origin
+                    ↳ RightShoulder
+                        ↳ RightArm
+                            ↳ Right ForeArm
+                                ↳ RightForeArm Roll1
+                                    ↳ RightForeArm Roll2
+                                        ↳ RightForeArm Roll3
+                                            ↳ RightForeArm Roll4
+                                                ↳ RightHand
+                                                    ↳ RightHandThumb1
+                                                        ↳ RightHandThumb2
+                                                            ↳ RightHandThumb3
+                                                                ↳ RightHandThumb4
+         */
+
     [HarmonyPatch(typeof(EntityPlayerLocal))]
     [HarmonyPatch("Init")]
     public class EntityPlayerLocal_Init
     {
+        static public vp_FPPlayerEventHandler eventHandler = new vp_FPPlayerEventHandler(); 
+
         static void Postfix(EntityPlayerLocal __instance, int _entityClass)
         {
             if (VorpX.VPX_RESULT.VPX_RES_OK != VorpX.vpxInit())
@@ -50,6 +74,19 @@ namespace _7DaysToDieVR
             // Attach the custom InputDevice to the InputManager.
             InputManager.AttachDevice(leftController);
             InputManager.AttachDevice(rightController);
+
+            VorpX.vpxForceControllerRendering(VorpX.VPX_BOOL.VPX_TRUE);
+
+        }
+
+        static void PrintTransformHierarchy(Transform transform, string prefix = "")
+        {
+            Log.Out(prefix + transform.name);
+
+            foreach (Transform child in transform)
+            {
+                PrintTransformHierarchy(child, prefix + transform.name + "/");
+            }
         }
     }
 
@@ -57,6 +94,9 @@ namespace _7DaysToDieVR
     [HarmonyPatch("LateUpdate")]
     public class EntityPlayerLocal_LateUpdate
     {
+
+        static bool printedOnce = false;
+
         static void Postfix(EntityPlayerLocal __instance)
         {
             Transform cameraTransform = __instance.cameraTransform;
@@ -75,8 +115,12 @@ namespace _7DaysToDieVR
             Vector3 headsetPosition = new Vector3(headsetPosition3f.x, headsetPosition3f.y, headsetPosition3f.z);
 
             __instance.playerCamera.transform.rotation = headsetRotation;
+            __instance.playerCamera.transform.position = __instance.cameraTransform.position + headsetPosition;
 
-            var activeDevice = InputManager.ActiveDevice;
+            var rightControllerPositionWorld = __instance.playerCamera.transform.position + VorpX.GetControllerPosition(1);
+
+
+            //__instance.vp_FPWeapon.WeaponModel.transform.SetPositionAndRotation(rightControllerPositionWorld, VorpX.GetControllerRotationQuaternion(1));
         }
     }
 }

@@ -63,6 +63,7 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
@@ -70,6 +71,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API.cs" />
+    <Compile Include="EasyIK.cs" />
+    <Compile Include="Popcron\Constants.cs" />
+    <Compile Include="Popcron\Drawer.cs" />
+    <Compile Include="Popcron\Drawers\CubeDrawer.cs" />
+    <Compile Include="Popcron\Drawers\LineDrawer.cs" />
+    <Compile Include="Popcron\Drawers\PolygonDrawer.cs" />
+    <Compile Include="Popcron\Drawers\SquareDrawer.cs" />
+    <Compile Include="Popcron\Element.cs" />
+    <Compile Include="Popcron\Gizmos.cs" />
+    <Compile Include="Popcron\GizmosInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VorpX.cs" />
     <Compile Include="VRControllerDevice.cs" />
