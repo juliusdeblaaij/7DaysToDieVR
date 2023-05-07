@@ -43,10 +43,10 @@ public class VRControllerDevice : InputDevice
         AddControl(InputControlType.DPadDown, "DPad Down");
         AddControl(InputControlType.DPadLeft, "DPad Left");
         AddControl(InputControlType.DPadRight, "DPad Right");
-        AddControl(InputControlType.Action1, "O");
-        AddControl(InputControlType.Action2, "A");
-        AddControl(InputControlType.Action3, "Y");
-        AddControl(InputControlType.Action4, "U");
+        AddControl(InputControlType.Action1, "A");
+        AddControl(InputControlType.Action2, "B");
+        AddControl(InputControlType.Action3, "X");
+        AddControl(InputControlType.Action4, "Y");
         AddControl(InputControlType.LeftBumper, "Left Bumper");
         AddControl(InputControlType.RightBumper, "Right Bumper");
         AddControl(InputControlType.LeftStickButton, "Left Stick Button");
@@ -58,15 +58,26 @@ public class VRControllerDevice : InputDevice
     {
     }
 
-    // Implement these types of locomotion input: https://developer.oculus.com/resources/artificial-locomotion-controls/
+    private Vector3 lastHeadsetPosition;
 
+    // TODO: Implement these types of locomotion input: https://developer.oculus.com/resources/artificial-locomotion-controls/
+    // TODO: Implement proper calls for both the left and right joystick.
     public override void Update(ulong updateTick, float deltaTime)
     {
         base.Update(updateTick, deltaTime);
 
         var vpxControllerState = VorpX.vpxGetControllerState( (uint) DeviceIndex);
+        var vpxHeadsetPos = VorpX.vpxGetHeadsetPosition();
+        var headsetPosition = new Vector3(vpxHeadsetPos.x, vpxHeadsetPos.y, vpxHeadsetPos.z);
 
         Vector2 joystickInput = new Vector2(vpxControllerState.StickX, vpxControllerState.StickY);
+
+        if (Mathf.Abs(joystickInput.x) < 0.1f && Mathf.Abs(joystickInput.y) < 0.1f)
+        {
+            joystickInput = new Vector2(headsetPosition.x, headsetPosition.z) - new Vector2(lastHeadsetPosition.x, lastHeadsetPosition.z);
+            joystickInput *= Time.deltaTime;
+            joystickInput /= 25f;
+        }
 
         switch (DirectionMappingMode)
         {
@@ -97,10 +108,14 @@ public class VRControllerDevice : InputDevice
         UpdateWithValue(InputControlType.LeftStickUp, stickYMax, updateTick, deltaTime);
 
         UpdateWithValue(InputControlType.RightTrigger, vpxControllerState.Trigger, updateTick, deltaTime);
+
+        UpdateWithValue(InputControlType.Action1, vpxControllerState.Extra0, updateTick, deltaTime);
+
+        lastHeadsetPosition = headsetPosition;
     }
 
     //TODO: Fix that the movement is screwed after the mouse is moved
-    public Vector2 GetRelativeMovement(Vector2 movementInput, Transform transform)
+    static public Vector2 GetRelativeMovement(Vector2 movementInput, Transform transform)
     {
         // get input from WASD keys
         float horizontal = movementInput.x;

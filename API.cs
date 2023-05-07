@@ -110,17 +110,14 @@ namespace _7DaysToDieVR
 
             var headsetRotation4f = VorpX.vpxGetHeadsetRotationQuaternion();
             var headsetPosition3f = VorpX.vpxGetHeadsetPosition();
+            var yaw_corrected_pos = VorpX.vpxYawCorrection(headsetPosition3f, headsetRotation4f.y);
 
             Quaternion headsetRotation = new Quaternion(-headsetRotation4f.x, -headsetRotation4f.y, headsetRotation4f.z, headsetRotation4f.w);
-            Vector3 headsetPosition = new Vector3(headsetPosition3f.x, headsetPosition3f.y, headsetPosition3f.z);
+
+            Vector3 headsetPosition = new Vector3(yaw_corrected_pos.x, yaw_corrected_pos.y, yaw_corrected_pos.z);
 
             __instance.playerCamera.transform.rotation = headsetRotation;
             __instance.playerCamera.transform.position = __instance.cameraTransform.position + headsetPosition;
-
-            var rightControllerPositionWorld = __instance.playerCamera.transform.position + VorpX.GetControllerPosition(1);
-
-
-            //__instance.vp_FPWeapon.WeaponModel.transform.SetPositionAndRotation(rightControllerPositionWorld, VorpX.GetControllerRotationQuaternion(1));
         }
     }
 }
